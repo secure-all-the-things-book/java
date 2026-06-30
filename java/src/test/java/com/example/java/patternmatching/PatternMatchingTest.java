@@ -6,48 +6,49 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternMatchingTest {
 
-    // <.>
-    final String authenticateMessage = """
-                please authenticate, so that we can
-                get to know you a little better.
-            """
-            .stripIndent()
-            .stripLeading()
-            .stripTrailing();
-    final String customerMessage = "the customer's name is %s";
+	// <.>
+	final String authenticateMessage = """
+			    please authenticate, so that we can
+			    get to know you a little better.
+			""".stripIndent().stripLeading().stripTrailing();
 
-    // <.>
-    String showMessageWithIf(BrowserClient browserClient) {
-        var message = "";
-        if (browserClient instanceof Customer(var id, var name)) {
-            message = this.customerMessage.formatted(name);
-        } else if (browserClient instanceof UnknownUser) {
-            message = this.authenticateMessage;
-        }
-        return message;
-    }
+	final String customerMessage = "the customer's name is %s";
 
-    // <.>
-    String showMessageWithSwitch(BrowserClient browserClient) {
-        return switch (browserClient) {
-            case Customer(var id, var name) -> this.customerMessage.formatted(name);
-            case UnknownUser() -> this.authenticateMessage;
-        };
-    }
+	// <.>
+	String showMessageWithIf(BrowserClient browserClient) {
+		var message = "";
+		if (browserClient instanceof Customer(var id, var name)) {
+			message = this.customerMessage.formatted(name);
+		}
+		else if (browserClient instanceof UnknownUser) {
+			message = this.authenticateMessage;
+		}
+		return message;
+	}
 
-    @Test
-    void patternMatching() throws Exception {
-        assertTrue(showMessageWithIf(new Customer(1, "Josh")).contains(this.customerMessage.formatted("Josh")));
-        assertTrue(showMessageWithSwitch(new UnknownUser()).contains(this.authenticateMessage));
-    }
+	// <.>
+	String showMessageWithSwitch(BrowserClient browserClient) {
+		return switch (browserClient) {
+			case Customer(var id, var name) -> this.customerMessage.formatted(name);
+			case UnknownUser() -> this.authenticateMessage;
+		};
+	}
 
-    // <.>
-    sealed interface BrowserClient permits UnknownUser, Customer {
-    }
+	@Test
+	void patternMatching() throws Exception {
+		assertTrue(showMessageWithIf(new Customer(1, "Josh")).contains(this.customerMessage.formatted("Josh")));
+		assertTrue(showMessageWithSwitch(new UnknownUser()).contains(this.authenticateMessage));
+	}
 
-    record UnknownUser() implements BrowserClient {
-    }
+	// <.>
+	sealed interface BrowserClient permits UnknownUser, Customer {
 
-    record Customer(Integer id, String name) implements BrowserClient {
-    }
+	}
+
+	record UnknownUser() implements BrowserClient {
+	}
+
+	record Customer(Integer id, String name) implements BrowserClient {
+	}
+
 }

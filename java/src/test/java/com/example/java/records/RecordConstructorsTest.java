@@ -7,24 +7,24 @@ import org.springframework.util.StringUtils;
 
 class RecordConstructorsTest {
 
-    @Test
-    void multipleConstructors() {
-        var customer1 = new Customer("test@email.com");
-        var customer2 = new Customer(2, "test2@gmail.com");
-        Assertions.assertEquals(customer1.id(), -1);
-        Assertions.assertEquals(customer2.id(), 2);
-    }
+	@Test
+	void multipleConstructors() {
+		var customer1 = new Customer("test@email.com");
+		var customer2 = new Customer(2, "test2@gmail.com");
+		Assertions.assertEquals(customer1.id(), -1);
+		Assertions.assertEquals(customer2.id(), 2);
+	}
 
-    record Customer(Integer id, String email) { // <1>
+	record Customer(Integer id, String email) { // <1>
 
-        Customer { // <2>
-            Assert.notNull(id, () -> "the id must never be null!");
-            Assert.isTrue(StringUtils.hasText(email), () -> "the email is invalid");
-        }
+		Customer { // <2>
+			Assert.notNull(id, () -> "the id must never be null!");
+			Assert.isTrue(StringUtils.hasText(email), () -> "the email is invalid");
+		}
 
-        Customer(String email) {
-            this(-1, email);
-        }
-    }
+		Customer(String email) {
+			this(-1, email);
+		}
+	}
 
 }
